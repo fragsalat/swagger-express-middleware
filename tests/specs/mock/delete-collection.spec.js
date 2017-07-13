@@ -877,6 +877,23 @@ describe('Query Collection Mock', function() {
         }
       );
 
+      it('should filter by an array property (multiple values, logical or)',
+        function(done) {
+          helper.initTest(dataStore, api, function(supertest) {
+            supertest
+              .delete('/api/pets?Tags[]=big,brown')
+              .expect(200, [Fido, Lassie, Spot])
+              .end(helper.checkResults(done, function() {
+                // Verify that the right pets were deleted
+                supertest
+                  .get('/api/pets')
+                  .expect(200, [Fluffy, Polly, Garfield])
+                  .end(helper.checkResults(done));
+              }));
+          });
+        }
+      );
+
       it('should filter by multiple properties',
         function(done) {
           helper.initTest(dataStore, api, function(supertest) {
